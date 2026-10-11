@@ -1,0 +1,99 @@
+baseURL = "https://darfire.github.io/"
+title = "Darfire"
+theme = "congo"
+defaultContentLanguage = "en"
+
+enableRobotsTXT = true
+summaryLength = 0
+copyright = "&copy; 2026 darfire"
+
+[pagination]
+  pagerSize = 15
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[privacy]
+  [privacy.vimeo]
+    enableDNT = true
+  [privacy.x]
+    enableDNT = true
+  [privacy.youTube]
+    privacyEnhanced = true
+
+[services]
+  [services.x]
+    disableInlineCSS = true
+
+[module]
+  [module.hugoVersion]
+    extended = true
+    min = "0.87.0"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    noClasses = false
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 3
+
+[taxonomies]
+  tag = "tags"
+
+[params]
+  colorScheme = "congo"
+  defaultAppearance = "light"
+  autoSwitchAppearance = true
+  description = "Notes and writing from darfire."
+
+  enableSearch = true
+  enableCodeCopy = true
+
+  [params.author]
+    name = "darfire"
+
+  [params.header]
+    layout = "basic"
+    showTitle = true
+
+  [params.footer]
+    showCopyright = true
+    showThemeAttribution = true
+    showAppearanceSwitcher = true
+    showScrollToTop = true
+
+  [params.homepage]
+    layout = "page"
+    showRecent = true
+    recentLimit = 5
+
+  [params.article]
+    showDate = true
+    showAuthor = true
+    showBreadcrumbs = true
+    showReadingTime = true
+    showTableOfContents = true
+    showPagination = true
+
+  [params.list]
+    showBreadcrumbs = true
+    showSummary = true
+    showTableOfContents = true
+
+[[menu.main]]
+  name = "Home"
+  pageRef = "/"
+  weight = 10
+
+[[menu.main]]
+  name = "Posts"
+  pageRef = "posts"
+  weight = 20
+
+[[menu.main]]
+  name = "Tags"
+  pageRef = "tags"
+  weight = 30
