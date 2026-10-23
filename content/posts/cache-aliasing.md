@@ -1,7 +1,7 @@
 +++
 title = 'Quirks of a CPU: Cache Aliasing'
 date = 2026-10-11T19:43:59Z
-draft = true
+draft = false
 +++
 
 > All non-trivial abstractions, to some degree, are leaky.
