@@ -1,4 +1,4 @@
-baseURL = "https://darfire.github.io/"
+baseURL = "https://darfire.github.io/bloggy-blog/"
 title = "Darfire"
 theme = "congo"
 defaultContentLanguage = "en"
