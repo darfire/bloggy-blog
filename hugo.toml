@@ -5,7 +5,7 @@ defaultContentLanguage = "en"
 
 enableRobotsTXT = true
 summaryLength = 0
-copyright = "&copy; 2026 darfire"
+copyright = "&copy; 2026 PeriPragmaton"
 
 [pagination]
   pagerSize = 15
