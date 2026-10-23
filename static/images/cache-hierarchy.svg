@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 390"
+     width="640" height="390" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <rect x="0.5" y="0.5" width="639" height="389" rx="10" fill="#fcfcfb" stroke="rgba(11,11,11,0.10)"/>
+  <rect x="245.0" y="24" width="150" height="34" rx="8" fill="#fcfcfb" stroke="#0b0b0b" stroke-width="1.5"/>
+  <text x="320.0" y="46.0" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0b0b0b">core / registers</text>
+  <text x="405.0" y="46.0" font-size="11" fill="#898781">~1 cycle</text>
+  <line x1="320.0" y1="58" x2="320.0" y2="84" stroke="rgba(11,11,11,0.10)" stroke-width="1.5"/>
+  <rect x="210.0" y="84" width="220" height="54" rx="8" fill="#86b6ef"/>
+  <text x="226.0" y="108" font-size="14" font-weight="600" fill="#0b0b0b">L1d</text>
+  <text x="226.0" y="126" font-size="11" fill="#0b0b0b" opacity="0.9">32KB, 8-way</text>
+  <text x="416.0" y="115.0" text-anchor="end" font-size="12" font-weight="600" fill="#0b0b0b">4 cycles</text>
+  <line x1="320.0" y1="138" x2="320.0" y2="152" stroke="rgba(11,11,11,0.10)" stroke-width="1.5"/>
+  <rect x="160.0" y="152" width="320" height="54" rx="8" fill="#3987e5"/>
+  <text x="176.0" y="176" font-size="14" font-weight="600" fill="#ffffff">L2</text>
+  <text x="176.0" y="194" font-size="11" fill="#ffffff" opacity="0.9">1MB, 8-way</text>
+  <text x="466.0" y="183.0" text-anchor="end" font-size="12" font-weight="600" fill="#ffffff">14 cycles</text>
+  <line x1="320.0" y1="206" x2="320.0" y2="220" stroke="rgba(11,11,11,0.10)" stroke-width="1.5"/>
+  <rect x="110.0" y="220" width="420" height="54" rx="8" fill="#256abf"/>
+  <text x="126.0" y="244" font-size="14" font-weight="600" fill="#ffffff">L3</text>
+  <text x="126.0" y="262" font-size="11" fill="#ffffff" opacity="0.9">16MB, shared</text>
+  <text x="516.0" y="251.0" text-anchor="end" font-size="12" font-weight="600" fill="#ffffff">~41 cycles (10.9ns)</text>
+  <line x1="320.0" y1="274" x2="320.0" y2="288" stroke="rgba(11,11,11,0.10)" stroke-width="1.5"/>
+  <rect x="60.0" y="288" width="520" height="54" rx="8" fill="#104281"/>
+  <text x="76.0" y="312" font-size="14" font-weight="600" fill="#ffffff">RAM</text>
+  <text x="76.0" y="330" font-size="11" fill="#ffffff" opacity="0.9">many GB</text>
+  <text x="566.0" y="319.0" text-anchor="end" font-size="12" font-weight="600" fill="#ffffff">up to ~450 cycles (100-120ns)</text>
+</svg>
