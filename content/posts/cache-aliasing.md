@@ -127,11 +127,11 @@ row and per column now, instead of a whole column piling into one.
 
 To actually measure this rather than just reason about it, I used
 `perf stat` with `cache-references` and `cache-misses` alongside
-wall-clock timing. That's all wrapped in a small script (`bench.sh` in
+wall-clock timing. That's all wrapped in a small script ([`bench.sh`](https://github.com/darfire/bloggy-code/blob/main/matrix-cache-aliasing/bench.sh) in
 the repo): it builds both variants, runs each one a handful of times per
 size to smooth out noise, and reports the miss rate and the speedup
 relative to the slow case. Numbers from actually running it (full code in
-`code/matrix-cache-aliasing` if you want to poke at it):
+[`matrix-cache-aliasing`](https://github.com/darfire/bloggy-code/tree/main/matrix-cache-aliasing) if you want to poke at it):
 
 | N    | access pattern       | LD   | time    | miss % | speedup |
 |------|----------------------|------|---------|--------|---------|
@@ -171,7 +171,7 @@ for (i = 0; i < n; i++)
 `b[k][j]` is the same column-stride access as before, just one level
 deeper. Now it's sitting inside an O(n^3) loop instead of an O(n^2) one,
 so whatever it costs you gets multiplied out accordingly
-(`code/matmul-cache-aliasing`):
+([`matmul-cache-aliasing`](https://github.com/darfire/bloggy-code/tree/main/matmul-cache-aliasing)):
 
 | N    | layout    | LD   | time    | miss % | speedup |
 |------|-----------|------|---------|--------|---------|
