@@ -1,7 +1,7 @@
 +++
 title = 'Playing with Profile-Guided Optimization'
 date = 2026-10-25T09:00:00Z
-draft = true
+draft = false
 summary = "What the compiler has to guess about your program, and what changes when it doesn't have to. Profile-guided optimization on a toy interpreter and on SQLite."
 tags = ['compilers', 'performance']
 +++

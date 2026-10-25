@@ -1,7 +1,7 @@
 +++
 title = 'Under Pressure: Mind the Instruction Cache'
 date = 2026-10-17T20:54:24Z
-draft = true
+draft = false
 summary = "What happens when a hot loop runs through more code than the instruction cache can hold, and why batching work is a design decision the compiler won't make for you."
 tags = ['CPU', 'caches', 'performance']
 +++
