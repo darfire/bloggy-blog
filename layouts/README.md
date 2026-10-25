@@ -17,3 +17,8 @@ Drop these once Congo ships a fix upstream.
 root-absolute static image paths (`/images/...`) go through `relURL`, so
 they pick up the baseURL subpath (e.g. `/bloggy-blog/`) on GitHub Pages.
 Harmless at a domain root.
+
+`_partials/logo.html` is a copy of the theme's that also accepts an SVG
+logo (the original asks for `.Width`, which Hugo only has for raster
+images); SVGs are shown at 32x32. `_partials/favicons.html` replaces the
+theme's default favicons with `static/favicon.svg`.

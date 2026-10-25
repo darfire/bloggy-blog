@@ -57,6 +57,7 @@ copyright = "&copy; 2026 PeriPragmaton"
 
   [params.header]
     layout = "basic"
+    logo = "img/logo.svg"
     showTitle = true
 
   [params.footer]
@@ -99,3 +100,8 @@ copyright = "&copy; 2026 PeriPragmaton"
   name = "Tags"
   pageRef = "tags"
   weight = 30
+
+[[menu.main]]
+  name = "About"
+  pageRef = "about"
+  weight = 40
