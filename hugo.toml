@@ -77,11 +77,13 @@ copyright = "&copy; 2026 PeriPragmaton"
     showReadingTime = true
     showTableOfContents = true
     showPagination = true
+    showTaxonomies = true
 
   [params.list]
     showBreadcrumbs = true
     showSummary = true
     showTableOfContents = true
+    showTaxonomies = true
 
 [[menu.main]]
   name = "Home"

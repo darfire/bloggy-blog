@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 330" width="640" height="330" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <rect x="0.5" y="0.5" width="639" height="329" rx="10" fill="#fcfcfb" stroke="rgba(11,11,11,0.10)"/>
+  <text x="24" y="32" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">SQLite speedtest1: faster than plain -O2</text>
+  <text x="24" y="54" font-size="11.5" fill="#52514e" text-anchor="start">trained on:</text>
+  <rect x="94" y="44" width="12" height="12" rx="3" fill="#2a78d6"/>
+  <text x="111" y="54" font-size="11.5" fill="#0b0b0b" text-anchor="start">main</text>
+  <rect x="162" y="44" width="12" height="12" rx="3" fill="#eb6834"/>
+  <text x="179" y="54" font-size="11.5" fill="#0b0b0b" text-anchor="start">cte</text>
+  <rect x="223" y="44" width="12" height="12" rx="3" fill="#1baf7a"/>
+  <text x="240" y="54" font-size="11.5" fill="#0b0b0b" text-anchor="start">main+cte</text>
+  <line x1="56" y1="278.0" x2="616" y2="278.0" stroke="rgba(11,11,11,0.10)" stroke-width="1"/>
+  <text x="48" y="282.0" font-size="10.5" fill="#898781" text-anchor="end">0</text>
+  <line x1="56" y1="237.6" x2="616" y2="237.6" stroke="rgba(11,11,11,0.10)" stroke-width="1"/>
+  <text x="48" y="241.6" font-size="10.5" fill="#898781" text-anchor="end">+5%</text>
+  <line x1="56" y1="197.2" x2="616" y2="197.2" stroke="rgba(11,11,11,0.10)" stroke-width="1"/>
+  <text x="48" y="201.2" font-size="10.5" fill="#898781" text-anchor="end">+10%</text>
+  <line x1="56" y1="156.8" x2="616" y2="156.8" stroke="rgba(11,11,11,0.10)" stroke-width="1"/>
+  <text x="48" y="160.8" font-size="10.5" fill="#898781" text-anchor="end">+15%</text>
+  <line x1="56" y1="116.4" x2="616" y2="116.4" stroke="rgba(11,11,11,0.10)" stroke-width="1"/>
+  <text x="48" y="120.39999999999998" font-size="10.5" fill="#898781" text-anchor="end">+20%</text>
+  <line x1="56" y1="278" x2="616" y2="278" stroke="#52514e" stroke-width="1"/>
+  <path d="M75.0,278 V177.2 Q75.0,173.2 79.0,173.2 H103.7 Q107.7,173.2 107.7,177.2 V278 Z" fill="#2a78d6"/>
+  <text x="91.33333333333333" y="168.15300193673332" font-size="10.5" fill="#52514e" text-anchor="middle">13%</text>
+  <path d="M109.7,278 V237.7 Q109.7,233.7 113.7,233.7 H138.3 Q142.3,233.7 142.3,237.7 V278 Z" fill="#eb6834"/>
+  <text x="125.99999999999999" y="228.67932489451476" font-size="10.5" fill="#52514e" text-anchor="middle">5%</text>
+  <path d="M144.3,278 V183.0 Q144.3,179.0 148.3,179.0 H173.0 Q177.0,179.0 177.0,183.0 V278 Z" fill="#1baf7a"/>
+  <text x="160.66666666666666" y="174.0083386786401" font-size="10.5" fill="#52514e" text-anchor="middle">12%</text>
+  <text x="126.0" y="298" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">main</text>
+  <path d="M215.0,278 V215.4 Q215.0,211.4 219.0,211.4 H243.7 Q247.7,211.4 247.7,215.4 V278 Z" fill="#2a78d6"/>
+  <text x="231.33333333333334" y="206.41899441340775" font-size="10.5" fill="#52514e" text-anchor="middle">8%</text>
+  <path d="M249.7,278 V257.3 Q249.7,253.3 253.7,253.3 H278.3 Q282.3,253.3 282.3,257.3 V278 Z" fill="#eb6834"/>
+  <text x="266.0" y="248.2872340425532" font-size="10.5" fill="#52514e" text-anchor="middle">3%</text>
+  <path d="M284.3,278 V198.0 Q284.3,194.0 288.3,194.0 H313.0 Q317.0,194.0 317.0,198.0 V278 Z" fill="#1baf7a"/>
+  <text x="300.66666666666663" y="188.97720797720797" font-size="10.5" fill="#52514e" text-anchor="middle">10%</text>
+  <text x="266.0" y="298" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">orm</text>
+  <path d="M355.0,278 V197.3 Q355.0,193.3 359.0,193.3 H383.7 Q387.7,193.3 387.7,197.3 V278 Z" fill="#2a78d6"/>
+  <text x="371.3333333333333" y="188.32446594115274" font-size="10.5" fill="#52514e" text-anchor="middle">10%</text>
+  <path d="M389.7,278 V120.3 Q389.7,116.3 393.7,116.3 H418.3 Q422.3,116.3 422.3,120.3 V278 Z" fill="#eb6834"/>
+  <text x="406.0" y="111.32924693520133" font-size="10.5" fill="#52514e" text-anchor="middle">20%</text>
+  <path d="M424.3,278 V122.9 Q424.3,118.9 428.3,118.9 H453.0 Q457.0,118.9 457.0,122.9 V278 Z" fill="#1baf7a"/>
+  <text x="440.66666666666663" y="113.86986899563323" font-size="10.5" fill="#52514e" text-anchor="middle">20%</text>
+  <text x="406.0" y="298" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">cte</text>
+  <path d="M495.0,278 V244.6 Q495.0,240.6 499.0,240.6 H523.7 Q527.7,240.6 527.7,244.6 V278 Z" fill="#2a78d6"/>
+  <text x="511.3333333333333" y="235.60662914321446" font-size="10.5" fill="#52514e" text-anchor="middle">5%</text>
+  <path d="M529.7,278 V259.7 Q529.7,255.7 533.7,255.7 H558.3 Q562.3,255.7 562.3,259.7 V278 Z" fill="#eb6834"/>
+  <text x="546.0" y="250.66584766584756" font-size="10.5" fill="#52514e" text-anchor="middle">3%</text>
+  <path d="M564.3,278 V236.6 Q564.3,232.6 568.3,232.6 H593.0 Q597.0,232.6 597.0,236.6 V278 Z" fill="#1baf7a"/>
+  <text x="580.6666666666667" y="227.60101010101008" font-size="10.5" fill="#52514e" text-anchor="middle">6%</text>
+  <text x="546.0" y="298" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">fp</text>
+  <text x="56" y="318" font-size="10.5" fill="#898781" text-anchor="start">Ryzen 7 7840HS, in-memory database, best of 7 runs; orm and fp were not trained on</text>
+</svg>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 430" width="640" height="430" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+  <rect x="0.5" y="0.5" width="639" height="429" rx="10" fill="#fcfcfb" stroke="rgba(11,11,11,0.10)"/>
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs>
+  <text x="32" y="34" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">without a profile</text>
+  <text x="32" y="52" font-size="11" fill="#898781" text-anchor="start">rare code inline, hot path jumps over it</text>
+  <rect x="32" y="70" width="196" height="26" rx="5" fill="#dbe8f9" stroke="#3987e5" stroke-width="1.5"/>
+  <text x="42" y="87.0" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">step 1; if (flags &amp; 1)</text>
+  <rect x="32" y="102" width="196" height="40" rx="5" fill="#efeeeb" stroke="#b9b7b0" stroke-width="1.5"/>
+  <text x="42" y="126.0" font-size="11.5" fill="#52514e" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">rare case 1</text>
+  <rect x="32" y="148" width="196" height="26" rx="5" fill="#dbe8f9" stroke="#3987e5" stroke-width="1.5"/>
+  <text x="42" y="165.0" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">step 2; if (flags &amp; 2)</text>
+  <rect x="32" y="180" width="196" height="40" rx="5" fill="#efeeeb" stroke="#b9b7b0" stroke-width="1.5"/>
+  <text x="42" y="204.0" font-size="11.5" fill="#52514e" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">rare case 2</text>
+  <rect x="32" y="226" width="196" height="26" rx="5" fill="#dbe8f9" stroke="#3987e5" stroke-width="1.5"/>
+  <text x="42" y="243.0" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">step 3; if (flags &amp; 4)</text>
+  <rect x="32" y="258" width="196" height="40" rx="5" fill="#efeeeb" stroke="#b9b7b0" stroke-width="1.5"/>
+  <text x="42" y="282.0" font-size="11.5" fill="#52514e" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">rare case 3</text>
+  <rect x="32" y="304" width="196" height="26" rx="5" fill="#dbe8f9" stroke="#3987e5" stroke-width="1.5"/>
+  <text x="42" y="321.0" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">step 4 ...</text>
+  <path d="M228,83.0 C264,83.0 264,158 230,158" fill="none" stroke="#eb6834" stroke-width="1.5" marker-end="url(#ah)"/>
+  <path d="M228,161.0 C264,161.0 264,236 230,236" fill="none" stroke="#eb6834" stroke-width="1.5" marker-end="url(#ah)"/>
+  <path d="M228,239.0 C264,239.0 264,314 230,314" fill="none" stroke="#eb6834" stroke-width="1.5" marker-end="url(#ah)"/>
+  <text x="272" y="180" font-size="11" fill="#eb6834" text-anchor="start">taken</text>
+  <text x="272" y="194" font-size="11" fill="#eb6834" text-anchor="start">branch</text>
+  <text x="272" y="208" font-size="11" fill="#eb6834" text-anchor="start">every time</text>
+  <text x="336" y="34" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">with a profile</text>
+  <text x="336" y="52" font-size="11" fill="#898781" text-anchor="start">hot path falls through, rare code moved out</text>
+  <rect x="336" y="70" width="196" height="26" rx="5" fill="#dbe8f9" stroke="#3987e5" stroke-width="1.5"/>
+  <text x="346" y="87.0" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">step 1; if (flags &amp; 1)</text>
+  <rect x="336" y="102" width="196" height="26" rx="5" fill="#dbe8f9" stroke="#3987e5" stroke-width="1.5"/>
+  <text x="346" y="119.0" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">step 2; if (flags &amp; 2)</text>
+  <rect x="336" y="134" width="196" height="26" rx="5" fill="#dbe8f9" stroke="#3987e5" stroke-width="1.5"/>
+  <text x="346" y="151.0" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">step 3; if (flags &amp; 4)</text>
+  <rect x="336" y="166" width="196" height="26" rx="5" fill="#dbe8f9" stroke="#3987e5" stroke-width="1.5"/>
+  <text x="346" y="183.0" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">step 4 ...</text>
+  <rect x="336" y="198" width="196" height="26" rx="5" fill="#dbe8f9" stroke="#3987e5" stroke-width="1.5"/>
+  <text x="346" y="215.0" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">...</text>
+  <line x1="336" y1="238" x2="532" y2="238" stroke="rgba(11,11,11,0.10)" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="532" y="232" font-size="10.5" fill="#898781" text-anchor="end">end of hot code</text>
+  <rect x="336" y="250" width="196" height="40" rx="5" fill="#efeeeb" stroke="#b9b7b0" stroke-width="1.5"/>
+  <text x="346" y="274.0" font-size="11.5" fill="#52514e" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">rare case 1</text>
+  <rect x="336" y="296" width="196" height="40" rx="5" fill="#efeeeb" stroke="#b9b7b0" stroke-width="1.5"/>
+  <text x="346" y="320.0" font-size="11.5" fill="#52514e" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">rare case 2</text>
+  <rect x="336" y="342" width="196" height="40" rx="5" fill="#efeeeb" stroke="#b9b7b0" stroke-width="1.5"/>
+  <text x="346" y="366.0" font-size="11.5" fill="#52514e" text-anchor="start" font-family="ui-monospace, 'SF Mono', Menlo, monospace">rare case 3</text>
+  <path d="M532,83.0 H554 V264 H535" fill="none" stroke="#b9b7b0" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#ah)"/>
+  <path d="M532,115.0 H566 V310 H535" fill="none" stroke="#b9b7b0" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#ah)"/>
+  <path d="M532,147.0 H578 V356 H535" fill="none" stroke="#b9b7b0" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#ah)"/>
+  <text x="336" y="416" font-size="11" fill="#898781" text-anchor="start">dashed: taken 2% of the time</text>
+</svg>

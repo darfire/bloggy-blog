@@ -2,6 +2,8 @@
 title = 'Quirks of a CPU: Cache Aliasing'
 date = 2026-10-11T19:43:59Z
 draft = false
+summary = 'Summing a power-of-two-sized matrix column by column is eight times slower than the same loop with one extra element per row. Why cache sets make some addresses collide, and how to spot it.'
+tags = ['CPU', 'caches', 'performance']
 +++
 
 > All non-trivial abstractions, to some degree, are leaky.
@@ -267,3 +269,4 @@ supposed to be correct.
 - [Ulrich Drepper - Memory part 2: CPU caches](https://lwn.net/Articles/252125/) - from his "What Every Programmer Should Know About Memory" series; the canonical deep dive on cache associativity, conflict misses, and exactly this kind of power-of-two-stride aliasing
 - [TechPowerUp - AMD "Zen 4" Dies, Transistor-Counts, Cache Sizes and Latencies Detailed](https://www.techpowerup.com/298338/amd-zen-4-dies-transistor-counts-cache-sizes-and-latencies-detailed) - L1d/L2 latency figures
 - [Chips and Cheese - Hot Chips 2023: AMD's Phoenix SoC](https://chipsandcheese.com/p/hot-chips-2023-amds-phoenix-soc) - L3/DRAM latency figures for this machine's actual chip (Ryzen 7 7840HS, "Phoenix")
+- [darfire/bloggy-code - matrix-cache-aliasing](https://github.com/darfire/bloggy-code/tree/main/matrix-cache-aliasing) and [matmul-cache-aliasing](https://github.com/darfire/bloggy-code/tree/main/matmul-cache-aliasing) - full benchmark code and `bench.sh` for the numbers in this post

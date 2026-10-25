@@ -2,23 +2,39 @@
 title = 'Quirks of a CPU: Instruction Cache Pressure'
 date = 2026-10-12T20:54:24Z
 draft = true
+summary = 'A loop that runs through more code than fits in the instruction cache: 96 functions over a batch of items, three times slower item-by-item than function-by-function. And a first measurement that blamed the wrong thing.'
+tags = ['CPU', 'caches', 'performance']
 +++
 
-Take the same set of operations, apply them to the same batch of items,
-and get the exact same output either way. Change nothing but which order
-you loop over them in - item by item, or operation by operation - and one
-version runs three times slower than the other. Nothing about the work
-changes. Just the order it happens in.
+This post is about the instruction cache, and what happens when a hot
+loop runs through more code than fits in it. It's also about how a
+design decision that looks purely structural - whether a program
+processes one item at a time or a batch at a time - can decide how fast
+it runs, in a way no compiler will fix for you. The last part looks at
+high-performance networking, where this decision has shaped the
+architecture of real packet processors.
 
 ## what's actually different here
 
-Caches don't only hold data. Instructions have to get fetched into the
-core too, and that fetch goes through its own cache - same fixed-size
-lines, same sets, same limited associativity as any other cache, just
-holding code instead of numbers. Most of the time this is invisible,
-because most functions are small and called often enough to stay
-resident. It stops being invisible once you're cycling through more code
-than the cache can actually hold at once.
+Caches don't only hold data. The front end of the core - branch
+prediction, fetch, decode - pulls instructions through its own L1
+instruction cache, split from the data side: on a recent x86-64 core that's
+32KB, 8-way, 64-byte lines, the same set-indexed structure as L1d, just
+holding code. In front of it sits a cache of already-decoded micro-ops
+(the op cache on AMD, the uop cache / DSB on Intel), a few thousand
+entries, and behind it the unified L2, a dozen or so cycles away. A miss
+in L1i is worse than its latency suggests: the out-of-order back end can
+keep working through a data miss as long as it has independent
+instructions, but an instruction fetch miss means there are no new
+instructions to work on, so the whole pipeline drains while it waits.
+
+Most of the time this is invisible - hot code is small, the fetch
+prefetcher (steered by the branch predictor) runs ahead of sequential
+code, and what's hot stays resident. It stops being invisible once a loop
+cycles through more code than the cache can hold: with a roughly LRU
+replacement policy, a cyclic working set even slightly larger than
+capacity evicts every line just before it's needed again, so the miss
+rate jumps from near zero to nearly every line.
 
 ## a benchmark, and a wrong turn
 
@@ -57,13 +73,14 @@ to produce a similarly-shaped number.
 
 ## isolating the actual effect
 
-Fixed by switching from function pointers to direct calls - compile-time-
-known targets instead of a jump through a table, 96 generated functions
-with genuinely distinct bodies (identical bodies just get folded back
-together by the linker, which would have quietly undone the whole setup),
-called by name in both loop orders. A direct call doesn't need branch
-target prediction the way an indirect one does, so that confound goes
-away on its own.
+To take the branch predictor out of the picture, I replaced the function
+pointers with direct calls. The benchmark now generates 96 functions and
+calls each one by name, in both loop orders, so every call target is
+known at compile time and no lookup through a table is needed. Each
+function also has a genuinely distinct body. Identical bodies get folded
+into one by the toolchain, which would have quietly undone the whole
+setup. A direct call doesn't need branch target prediction the way an
+indirect one does, so that confound goes away on its own.
 
 With that fixed, branch-misses came back nearly identical between the two
 versions - noise, not signal. Icache-load-misses did not:
@@ -77,8 +94,8 @@ versions - noise, not signal. Icache-load-misses did not:
 | 200000  | fused  | 0.5809s | 287836         | 1.00x   |
 | 200000  | staged | 0.1864s | 6449           | 3.12x   |
 
-(full code in `code/icache-pipeline` if you want the generator script and
-`bench.sh` that produced this)
+(full code in [`icache-pipeline`](https://github.com/darfire/bloggy-code/tree/main/icache-pipeline) if you want the generator script and
+[`bench.sh`](https://github.com/darfire/bloggy-code/blob/main/icache-pipeline/bench.sh) that produced this)
 
 The miss counts are the part worth sitting with, more than the times.
 Fused's icache misses scale roughly linearly with item count, because
@@ -86,6 +103,24 @@ every single item re-triggers the same fetch churn across all 96
 functions. Staged's barely move - it pays for each function's code once
 per stage, not once per item, so growing the batch past that fixed cost
 is close to free.
+
+## why the compiler won't do this for you
+
+Turning fused into staged is a known loop transformation - loop
+distribution - and both GCC and clang implement it. Neither applies it
+here, even at `-O3`, with link-time optimization and every op marked
+`__attribute__((const))`: GCC 12 and clang 18 both emit one loop with 96
+calls in it. Their cost models think about vectorization and data
+locality; none of them estimates whether a loop body's code fits in the
+instruction cache.
+
+So staging is a design decision, and not a local one. It decides whether
+work flows through the program one item at a time or in batches, and
+that shapes everything around it: function signatures that take arrays
+instead of single values, buffers between stages, how errors and early
+exits are handled. It's cheap to choose early and expensive to retrofit,
+which is why the systems that depend on it are built around it from the
+start.
 
 ## where this shows up outside a microbenchmark
 
@@ -95,7 +130,9 @@ fits in L1i" is a real production shape, and there's a well-known system
 built directly around avoiding it: [FD.io's VPP](https://s3-docs.fd.io/vpp/22.06/developer/corearchitecture/softwarearchitecture.html)
 (Vector Packet Processing, originally from Cisco, now a networking
 dataplane used widely enough to be the basis of multiple routers and
-vSwitches). VPP structures packet processing as a directed graph of small
+vSwitches).
+
+VPP structures packet processing as a directed graph of small
 nodes - `dpdk-input`, `ip4-lookup`, and so on - and processes an entire
 *vector* of packets through one node before moving to the next, instead
 of running each packet through the whole graph individually. The project
@@ -105,6 +142,13 @@ packet in a vector warms that node's code up, every packet after it in
 the same batch runs against an already-hot cache. That's "staged," at
 production scale, built for the exact reason this post's benchmark shows
 a 3x gap.
+
+![Two grids of 4 packets by 5 processing stages, each cell numbered with its execution order. Top, the Linux network stack: numbers run across each row, so packet 1 goes through all five stages (1 to 5) before packet 2 starts. Bottom, VPP: numbers run down each column, so all four packets go through dpdk-input (1 to 4) before ethernet-input runs. The lookup stage is highlighted in both: in the kernel it runs at steps 4, 9, 14 and 19, in VPP at 13 to 16 back to back.](/images/vpp-vs-kernel.svg)
+
+> **Fused vs staged, in a router.** The kernel side is simplified: NAPI
+> already polls packets from the driver in batches, and since 4.19 the
+> early receive path can pass lists of packets along, but most of the
+> stack still runs one packet at a time.
 
 ## so, what
 
@@ -120,3 +164,4 @@ other, and nothing stopping you from pairing them up wrong.
 
 - [FD.io VPP - Software Architecture](https://s3-docs.fd.io/vpp/22.06/developer/corearchitecture/softwarearchitecture.html) - graph-node design and the instruction-cache rationale behind vector processing
 - [FD.io VPP - Scalar vs Vector packet processing](https://fd.io/docs/vpp/v2101/whatisvpp/scalar-vs-vector-packet-processing) - the scalar/fused vs vector/staged comparison directly
+- [darfire/bloggy-code - icache-pipeline](https://github.com/darfire/bloggy-code/tree/main/icache-pipeline) - full benchmark code, generator script, and `bench.sh` for the numbers in this post
