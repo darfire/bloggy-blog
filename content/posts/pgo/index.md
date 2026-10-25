@@ -1,5 +1,5 @@
 +++
-title = 'Profile-Guided Optimization'
+title = 'Playing with Profile-Guided Optimization'
 date = 2026-10-25T09:00:00Z
 draft = true
 summary = "What the compiler has to guess about your program, and what changes when it doesn't have to. Profile-guided optimization on a toy interpreter and on SQLite."
@@ -18,11 +18,9 @@ The compiler does have one blind spot, though, and it's built into the
 job. It has to produce one binary that's correct for every input, and
 for most decisions it has no idea which inputs will actually show up.
 This post is about what that costs and how to hand the compiler the
-missing information. On a toy interpreter the difference is 1.39x, with
-identical source and identical output. On SQLite it's
-3–20%, depending mostly on what the training run looked like.
+missing information.
 
-## what the compiler has to guess
+## What the compiler has to guess
 
 Take a branch like this one:
 
@@ -40,7 +38,7 @@ If not, every execution pays for a taken branch, and the hot code ends
 up spread across more cache lines than it needs, interleaved with code
 that rarely runs.
 
-Without more information, clang estimates branch probabilities from
+Without more information, the compiler estimates branch probabilities from
 static heuristics. Loop back-edges are probably taken. A comparison of a
 pointer against null probably fails. A path that ends in a call to
 `abort()` is probably cold. These rules work surprisingly well on typical
@@ -61,10 +59,17 @@ Code that's hot but spread across many lines pushes other hot code out of
 the 32KB L1 instruction cache and out of the op cache. None of this
 shows up in an instruction count.
 
-## the three steps
+The obvious fix is to stop guessing and measure. Profile-guided
+optimization (PGO) does exactly that: build the program once with
+instrumentation, run it on a workload that looks like real use, and
+feed the recorded branch and call counts back into a second compile.
+**The compiler makes the same decisions as before, but with measured
+numbers instead of heuristics.** The idea is old - GCC has supported it
+for more than two decades - and the tooling is mature.
 
-Profile-guided optimization (PGO) gives the compiler the missing
-information by measuring it. With clang:
+## The three steps
+
+Taking clang as the target compiler, it's three steps:
 
 ```sh
 # 1. build with counters on every branch and call
@@ -91,7 +96,7 @@ profile format. Several large projects ship PGO builds: CPython's
 Chrome are built with it, and GCC can build itself this way with
 `make profiledbootstrap`.
 
-## what changes in the compiled code
+## What changes in the compiled code
 
 A profile turns guessed branch probabilities into measured ones, and
 every pass that consults them makes different decisions. The main ones:
@@ -111,7 +116,7 @@ The interesting consequence is that the code doesn't only get
 rearranged. It's different code: larger where the program spends its
 time and smaller everywhere else. That will show up in SQLite below.
 
-## a toy interpreter
+## A toy interpreter
 
 To isolate the effect, I wrote a small bytecode interpreter
 ([`pgo-dispatch`](https://github.com/darfire/bloggy-code/tree/main/pgo-dispatch)).
@@ -184,7 +189,7 @@ Instruction cache misses fall by a similar factor of four, because the
 hot path of each opcode is now contiguous and the rare fragments no
 longer sit in the middle of it.
 
-With the wrong profile, most of that disappears. The binary trained on
+**With the wrong profile, most of that disappears.** The binary trained on
 B treats all of A's opcodes as never executed, so none of the layout
 work lands where A needs it, and taken branches stay where they were.
 What's left (1.16x on A, 1.05x on B) presumably comes from the cold
@@ -202,6 +207,7 @@ those of a matching profile.
 A toy built to have this problem isn't evidence that real code has it.
 For a real program I used SQLite and its own benchmark, `speedtest1`
 ([`bolt-sqlite`](https://github.com/darfire/bloggy-code/tree/main/bolt-sqlite)).
+
 That's a reasonable candidate. Most of SQLite's time goes into
 `sqlite3VdbeExec`, a bytecode interpreter that is one large `switch`
 over its roughly 190 opcodes. Around it sit a B-tree, a pager and a query
@@ -246,9 +252,6 @@ branches and icache misses from `perf stat`:
 | fp       | cte        | 1.628s |        1512.6M |          8.2M |   1.03x |
 | fp       | main+cte   | 1.584s |        1417.9M |         13.3M |   1.06x |
 
-A second full run, from a clean build, agreed with this one to within
-0.03x on every row.
-
 ![Grouped bar chart of how much faster each PGO build of SQLite is than plain -O2, for each test set. main: trained on main 13%, on cte 5%, on both 12%. orm: 8%, 3%, 10%. cte: 10%, 20%, 20%. fp: 5%, 3%, 6%.](/images/pgo-sqlite-speedup.svg)
 
 The pattern from the toy holds, at a smaller scale. A matching profile
@@ -277,7 +280,7 @@ similar factors. That's expected: the toy was built so that nearly all
 of its time goes into fetching code, and SQLite does a fair amount of
 real work per branch.
 
-### a look inside
+### A look inside
 
 It's worth looking at what the profile did to the interpreter function
 itself (clang 18.1.8 builds; exact sizes vary between compiler
@@ -304,7 +307,7 @@ cursors, decoding records, comparing values, moving through B-tree
 pages. What they disagree about is how much of the code at the edges is
 hot.
 
-## choosing what to train on
+## Choosing what to train on
 
 Every result above comes down to the training run, which is the actual
 engineering problem in using PGO. Some observations from doing this:
@@ -333,7 +336,19 @@ recording, and convert that into a profile for the next build. It's
 less precise, but the profile comes from real traffic instead of a
 training script, which addresses the main weakness above.
 
-## conclusion
+## Profiling as part of the build
+
+A profile describes the workload at one point in time, and workloads
+drift: users adopt new features, data grows, traffic shifts. A profile
+from last year can quietly optimize for a program that no longer runs.
+That's the real argument for profiling periodically and proactively,
+not just once and not only when something is visibly slow - the same
+point [the cache aliasing post](/posts/cache-aliasing/) ended on. With
+the training run in the build, every release gets a fresh profile, and
+a profile that changes noticeably from one release to the next is
+itself a signal that the workload has moved.
+
+## Conclusion
 
 PGO doesn't make the compiler smarter. It gives the compiler a fact it
 can't derive from the source: which way the branches actually go. For
@@ -347,7 +362,7 @@ The same information can also be applied later, to a binary that has
 already been linked, without rebuilding anything. That's what LLVM's
 BOLT does, and it's the subject of the next post.
 
-## references
+## References
 
 - [Clang - Profile Guided Optimization](https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization) - the flags used here, and the sampling-based variant
 - [GCC - Instrumentation Options](https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html) - `-fprofile-generate` and `-fprofile-use` in GCC

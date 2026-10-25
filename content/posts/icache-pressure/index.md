@@ -1,8 +1,8 @@
 +++
-title = 'Quirks of a CPU: Instruction Cache Pressure'
-date = 2026-10-12T20:54:24Z
+title = 'Under Pressure: Mind the Instruction Cache'
+date = 2026-10-17T20:54:24Z
 draft = true
-summary = 'A loop that runs through more code than fits in the instruction cache: 96 functions over a batch of items, three times slower item-by-item than function-by-function. And a first measurement that blamed the wrong thing.'
+summary = "What happens when a hot loop runs through more code than the instruction cache can hold, and why batching work is a design decision the compiler won't make for you."
 tags = ['CPU', 'caches', 'performance']
 +++
 
@@ -14,7 +14,7 @@ it runs, in a way no compiler will fix for you. The last part looks at
 high-performance networking, where this decision has shaped the
 architecture of real packet processors.
 
-## what's actually different here
+## The instruction cache
 
 Caches don't only hold data. The front end of the core - branch
 prediction, fetch, decode - pulls instructions through its own L1
@@ -26,7 +26,7 @@ entries, and behind it the unified L2, a dozen or so cycles away. A miss
 in L1i is worse than its latency suggests: the out-of-order back end can
 keep working through a data miss as long as it has independent
 instructions, but an instruction fetch miss means there are no new
-instructions to work on, so the whole pipeline drains while it waits.
+instructions to work on, so **the whole pipeline drains while it waits**.
 
 Most of the time this is invisible - hot code is small, the fetch
 prefetcher (steered by the branch predictor) runs ahead of sequential
@@ -36,7 +36,7 @@ replacement policy, a cyclic working set even slightly larger than
 capacity evicts every line just before it's needed again, so the miss
 rate jumps from near zero to nearly every line.
 
-## a benchmark, and a wrong turn
+## A benchmark, and a wrong turn
 
 To make that concrete: two ways to run the same N small functions over a
 batch of floats. **Fused** - for each item, call all N functions on it
@@ -66,12 +66,12 @@ Checking the actual counters told a different story. `L1-icache-load-misses`
 barely differed between the two versions - a couple thousand either way.
 What differed by a factor of 25 was `branch-misses`: fused sat around a
 20% misprediction rate on the indirect call, staged under 1%. The
-slowdown was real. It just wasn't instruction cache pressure - it was the
+slowdown was real. **It just wasn't instruction cache pressure** - it was the
 CPU's indirect-branch predictor failing to learn a repeating sequence of
-64 different call targets, a completely different mechanism that happens
+96 different call targets, a completely different mechanism that happens
 to produce a similarly-shaped number.
 
-## isolating the actual effect
+## Isolating the actual effect
 
 To take the branch predictor out of the picture, I replaced the function
 pointers with direct calls. The benchmark now generates 96 functions and
@@ -104,7 +104,7 @@ functions. Staged's barely move - it pays for each function's code once
 per stage, not once per item, so growing the batch past that fixed cost
 is close to free.
 
-## why the compiler won't do this for you
+## Why the compiler won't do this for you
 
 Turning fused into staged is a known loop transformation - loop
 distribution - and both GCC and clang implement it. Neither applies it
@@ -114,15 +114,15 @@ calls in it. Their cost models think about vectorization and data
 locality; none of them estimates whether a loop body's code fits in the
 instruction cache.
 
-So staging is a design decision, and not a local one. It decides whether
+**So staging is a design decision, and not a local one.** It decides whether
 work flows through the program one item at a time or in batches, and
 that shapes everything around it: function signatures that take arrays
 instead of single values, buffers between stages, how errors and early
-exits are handled. It's cheap to choose early and expensive to retrofit,
+exits are handled. **It's cheap to choose early and expensive to retrofit**,
 which is why the systems that depend on it are built around it from the
 start.
 
-## where this shows up outside a microbenchmark
+## Where this shows up outside a microbenchmark
 
 Nobody writes a 96-function synthetic pipeline by accident, but "many
 small handlers, dispatched across a large batch, more combined code than
@@ -134,7 +134,7 @@ vSwitches).
 
 VPP structures packet processing as a directed graph of small
 nodes - `dpdk-input`, `ip4-lookup`, and so on - and processes an entire
-*vector* of packets through one node before moving to the next, instead
+**vector** of packets through one node before moving to the next, instead
 of running each packet through the whole graph individually. The project
 is explicit that this is an instruction-cache decision: each node is
 deliberately kept small enough to fit inside L1i, and because the first
@@ -150,7 +150,7 @@ a 3x gap.
 > early receive path can pass lists of packets along, but most of the
 > stack still runs one packet at a time.
 
-## so, what
+## So, what
 
 The honest moral here isn't really about instruction caches. It's about
 the first measurement I believed. A 3x gap with a plausible-sounding
@@ -160,7 +160,7 @@ Branch misprediction and icache pressure can produce numbers that look
 the same from a distance - a stopwatch in one hand and a theory in the
 other, and nothing stopping you from pairing them up wrong.
 
-## references
+## References
 
 - [FD.io VPP - Software Architecture](https://s3-docs.fd.io/vpp/22.06/developer/corearchitecture/softwarearchitecture.html) - graph-node design and the instruction-cache rationale behind vector processing
 - [FD.io VPP - Scalar vs Vector packet processing](https://fd.io/docs/vpp/v2101/whatisvpp/scalar-vs-vector-packet-processing) - the scalar/fused vs vector/staged comparison directly

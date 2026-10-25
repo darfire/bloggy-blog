@@ -8,7 +8,7 @@ tags = ['CPU', 'caches', 'performance']
 
 > All non-trivial abstractions, to some degree, are leaky.
 >
-> — Joel Spolsky, *The Law of Leaky Abstractions* (2002)
+> — Joel Spolsky, **The Law of Leaky Abstractions** (2002)
 
 This is a post about small, easy-to-miss changes with consequences
 nowhere near proportional to their size - the kind a code reviewer would
@@ -16,7 +16,7 @@ wave straight through without a second thought. One of them, in
 particular, is going to cost eight times the runtime before this post is
 done, and no amount of reading the code will tell you why.
 
-## the gap between the language and the machine
+## The gap between the language and the machine
 
 Programming languages, more or less, still model something close to an
 idealized Turing machine - a tape, a pointer into it, and the assumption
@@ -40,7 +40,7 @@ going to warn you when you've stepped on it.
 Next I'll focus on showing practical effects of an obscure but important quirk
 of CPU caches: cache aliasing.
 
-## a quick primer on cache hierarchy, and where aliasing comes from
+## A quick primer on cache hierarchy, and where aliasing comes from
 
 The part of this that the rest of the post is actually about is caches
 specifically, so a quick refresher.
@@ -90,7 +90,7 @@ examples may look a bit contrived. But the effect is strongest exactly where
 we reach for power-of-two values for dimensions and strides - which is the
 default we've all been taught to use, for better or worse.
 
-## reproducing it on a real machine
+## Reproducing it on a real machine
 
 Take an N x N matrix of doubles, stored row-major, and sum it column by
 column instead of row by row:
@@ -115,7 +115,7 @@ index is just the column number - every row repeats the same 8 colors in
 the same order, so the whole column piles into one set, over and over,
 for every single row.
 
-The fix is to pad the row by one unused element. `ld` becomes `n + 1`,
+**The fix is to pad the row by one unused element.** `ld` becomes `n + 1`,
 the stride stops being a round power of two, and the exact same 8 colors
 spread out instead:
 
@@ -155,7 +155,7 @@ doesn't change what gets summed, only where each element happens to sit in
 memory. One version still ends up an order of magnitude slower, for
 reasons you would not find by just reading the loop.
 
-## a more realistic example: matrix multiply
+## A more realistic example: matrix multiply
 
 The column sum makes the point cleanly, but it's also obviously a
 demonstration - nobody accidentally writes a column-sum microbenchmark.
@@ -184,10 +184,10 @@ so whatever it costs you gets multiplied out accordingly
 | 1024 | pow2 LD   | 1024 | 6.3079s | 49.36% | 1.00x   |
 | 1024 | padded LD | 1025 | 0.8995s |  1.90% | 7.01x   |
 
-Up to 8.65x faster at N=512, from allocating one column you never
-actually use for anything.
+**Up to 8.65x faster at N=512, from allocating one column you never
+actually use for anything.**
 
-## maybe this is only a hand-rolled-C problem
+## Maybe this is only a hand-rolled-C problem
 
 Both examples so far are C, which raises an obvious question: is this a
 "writing your own loops" problem, or does it show up in the libraries
@@ -226,7 +226,7 @@ built-in reductions and its matmul are both guarded, deliberately, by
 people who already knew about this. A plain array operation that happens
 to walk memory the wrong way is not.
 
-## so, proactively, then
+## So, proactively, then
 
 None of this throws an error. The column sum still adds up to the right
 total, the matmul still produces the right matrix, `a.T.copy()` still
@@ -247,7 +247,7 @@ is already visibly, unambiguously too slow, usually once you've ruled out the
 easier explanations. Compare that to how we treat correctness. Nobody waits for
 a bug report before running the test suite; tests run on every commit, whether
 or not anything looks broken, precisely because "looks fine" and "is fine"
-aren't the same claim. Performance gets no equivalent default. Most code ships
+aren't the same claim. **Performance gets no equivalent default.** Most code ships
 having never been profiled at all, not because it's fast, but because nothing
 about it looked slow enough to bother checking.
 
@@ -264,7 +264,7 @@ disciplined part of shipping code that touches memory at any real scale, the
 same unglamorous way a test suite is just a normal part of shipping code that's
 supposed to be correct.
 
-## references
+## References
 
 - [Ulrich Drepper - Memory part 2: CPU caches](https://lwn.net/Articles/252125/) - from his "What Every Programmer Should Know About Memory" series; the canonical deep dive on cache associativity, conflict misses, and exactly this kind of power-of-two-stride aliasing
 - [TechPowerUp - AMD "Zen 4" Dies, Transistor-Counts, Cache Sizes and Latencies Detailed](https://www.techpowerup.com/298338/amd-zen-4-dies-transistor-counts-cache-sizes-and-latencies-detailed) - L1d/L2 latency figures
