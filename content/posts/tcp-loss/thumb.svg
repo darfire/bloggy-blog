@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240">
+  <rect x="0.5" y="0.5" width="319" height="239" rx="14" fill="#fcfcfb" stroke="rgba(11,11,11,0.10)"/>
+  <!-- capacity: BDP and BDP + queue -->
+  <line x1="32" y1="118" x2="292" y2="118" stroke="#b9b7b0" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <line x1="32" y1="56" x2="292" y2="56" stroke="#b9b7b0" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <!-- axes -->
+  <line x1="32" y1="204" x2="292" y2="204" stroke="#b9b7b0" stroke-width="2"/>
+  <line x1="32" y1="36" x2="32" y2="204" stroke="#b9b7b0" stroke-width="2"/>
+  <!-- reno: slow start, then the sawtooth -->
+  <polyline fill="none" stroke="#3987e5" stroke-width="3" stroke-linejoin="round"
+    points="32,200 44,196 52,188 58,170 62,140 66,56 66,130 116,56 116,130 166,56 166,130 216,56 216,130 266,56 266,130 292,104"/>
+</svg>
