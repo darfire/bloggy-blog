@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240">
+  <rect x="0.5" y="0.5" width="319" height="239" rx="14" fill="#fcfcfb" stroke="rgba(11,11,11,0.10)"/>
+  <!-- capacity: BDP and BDP + queue -->
+  <line x1="32" y1="118" x2="292" y2="118" stroke="#b9b7b0" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <line x1="32" y1="56" x2="292" y2="56" stroke="#b9b7b0" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <!-- axes -->
+  <line x1="32" y1="204" x2="292" y2="204" stroke="#b9b7b0" stroke-width="2"/>
+  <line x1="32" y1="36" x2="32" y2="204" stroke="#b9b7b0" stroke-width="2"/>
+  <!-- bbr: startup overshoot, then flat near the BDP with probe bumps, and one ProbeRTT dip -->
+  <polyline fill="none" stroke="#3987e5" stroke-width="3" stroke-linejoin="round"
+    points="32,200 40,196 46,184 51,150 55,70 58,44 61,96 64,112 73,112 76,100 79,118 82,112 91,112 94,100 97,118 100,112 109,112 112,100 115,118 118,112 127,112 130,100 133,118 136,112 145,112 148,100 151,118 154,112 163,112 166,100 169,118 172,112 176,112 177,196 187,196 188,112 197,112 200,100 203,118 206,112 215,112 218,100 221,118 224,112 233,112 236,100 239,118 242,112 251,112 254,100 257,118 260,112 269,112 272,100 275,118 278,112 287,112 290,100 293,118 296,112 292,112"/>
+</svg>
